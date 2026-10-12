@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ACE UTME TUTORIAL – Simulation Test</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f1ff;--card:#fff;--tx:#1d1b3a;--mu:#6b6890;--ac:#6d4aff;--ac2:#ff7a59;--bd:#e3defa;--ok:#12a36b;--bad:#e5484d;--sel:#ece7ff}
+:root[data-theme=dark]{--bg:#0f0d24;--card:#1a1740;--tx:#f1efff;--mu:#a6a2d0;--ac:#9a82ff;--ac2:#ff9473;--bd:#2f2a6a;--ok:#3ddc97;--bad:#ff6b70;--sel:#2a2570}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f0d24;--card:#1a1740;--tx:#f1efff;--mu:#a6a2d0;--ac:#9a82ff;--ac2:#ff9473;--bd:#2f2a6a;--ok:#3ddc97;--bad:#ff6b70;--sel:#2a2570}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 20% 0,var(--sel),transparent 45%),var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+.w{max-width:720px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:20px;box-shadow:0 8px 30px rgba(109,74,255,.12);margin-bottom:14px}
+.brand{text-align:center;padding:10px 0}.logo{font-size:44px}h1{margin:4px 0;font-size:26px;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.mu{color:var(--mu);font-size:14px}
+input{width:100%;padding:14px;margin:6px 0 12px;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px}
+input:focus{outline:2px solid var(--ac)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:13px 18px;font-weight:600}
+.pri{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;width:100%}.sec{background:var(--sel);color:var(--tx)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;background:var(--bg);color:var(--tx);border:1.5px solid var(--bd)}
+.opt.on{border-color:var(--ac);background:var(--sel)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 14px;margin-bottom:12px}
+.tm{font-weight:800;font-size:20px;color:var(--ac2)}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}.pal button{padding:8px 0;background:var(--bg);color:var(--tx);border:1px solid var(--bd)}.pal .d{background:var(--ac);color:#fff}.pal .c{outline:2px solid var(--ac2)}
+.row{display:flex;gap:10px}.row button{flex:1}.tag{display:inline-block;background:var(--sel);color:var(--ac);padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 6px;text-align:left;border-bottom:1px solid var(--bd)}.sc{overflow-x:auto}
+.big{font-size:56px;font-weight:800;text-align:center;color:var(--ac)}.hide{display:none}.foot{text-align:center;font-size:12px;color:var(--mu);margin:10px 0 20px}
+.lb{position:fixed;right:10px;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:9;background:var(--card);color:var(--tx);border:1px solid var(--bd);padding:8px 10px;font-size:12px;border-radius:12px}
+</style></head><body><div class="w" id="app"></div>
+<script>
+// ===== CONFIG: owner tells Claude "I've dropped it" -> OPEN_UNTIL is set to now + 15 hours (ms timestamp). 0 = not open yet.
+const OPEN_UNTIL=1791861550000, TOTAL_SECS=7200, TITLE="ACE UTME TUTORIAL";
+const B=[
+["English","Choose the word closest in meaning to CANDID: 'The manager's candid remark upset the staff.'","frank|deceitful|rude|noisy",0],
+["English","Choose the word opposite in meaning to SCARCE.","rare|abundant|costly|tiny",1],
+["English","Closest in meaning to METICULOUS.","careless|careful|hasty|bold",1],
+["English","Opposite in meaning to BENEVOLENT.","kind|generous|malevolent|gentle",2],
+["English","Neither the teacher nor the students ___ present.","was|is|were|has been",2],
+["English","She is the ___ of the two sisters.","tall|taller|tallest|most tall",1],
+["English","He rarely visits us, ___?","doesn't he|does he|isn't he|is he",1],
+["English","'To bite the bullet' means to ___.","eat quickly|endure a painful situation bravely|shoot someone|argue",1],
+["English","Choose the correct spelling.","accomodation|acommodation|accommodation|acomodation",2],
+["English","Which word is stressed on the second syllable?","doctor|pencil|reply|window",2],
+["English","Which word has the same vowel sound as 'seat'?","bit|meet|met|bat",1],
+["English","Which word begins with the same sound as 'chair'?","school|church|chef|character",1],
+["English","'The wind whispered through the trees' is an example of ___.","simile|irony|personification|hyperbole",2],
+["English","I look forward to ___ you next week.","see|saw|seeing|have seen",2],
+["English","Closest in meaning to EPHEMERAL.","lasting|short-lived|ancient|heavy",1],
+["Biology","The powerhouse of the cell is the ___.","ribosome|mitochondrion|nucleus|vacuole",1],
+["Biology","The site of protein synthesis in the cell is the ___.","ribosome|lysosome|Golgi body|centriole",0],
+["Biology","Hydra belongs to the phylum ___.","Annelida|Nematoda|Coelenterata|Mollusca",2],
+["Biology","The end product of starch digestion by amylase is ___.","glucose|maltose|fructose|sucrose",1],
+["Biology","Deficiency of vitamin C causes ___.","rickets|scurvy|beriberi|kwashiorkor",1],
+["Biology","The vessel carrying digested food from the gut to the liver is the ___.","hepatic vein|renal vein|hepatic portal vein|aorta",2],
+["Biology","The excretory structure of the earthworm is the ___.","flame cell|nephridium|Malpighian tubule|kidney",1],
+["Biology","The hormone responsible for phototropism is ___.","insulin|auxin|thyroxine|ethylene",1],
+["Biology","The dental formula of an adult man is ___.","2123/2123|3143/3143|1003/0033|2033/2033",0],
+["Biology","A cross between Tt and Tt gives a phenotypic ratio of ___.","1:1|3:1|1:2:1|9:3:3:1",1],
+["Biology","Which of these shows hypogeal germination?","bean|maize|castor oil seed|cotton",1],
+["Biology","Xylem tissue conducts ___.","manufactured food|water and mineral salts|hormones|oxygen only",1],
+["Chemistry","Two miscible liquids with different boiling points are separated by ___.","filtration|fractional distillation|decantation|sublimation",1],
+["Chemistry","The number of electrons in Mg²⁺ (atomic number 12) is ___.","12|10|14|8",1],
+["Chemistry","Boyle's law states that at constant temperature ___ is constant.","P/V|V/T|PV|P/T",2],
+["Chemistry","The pH of 0.01 M HCl is ___.","1|2|12|7",1],
+["Chemistry","The oxidation number of Mn in KMnO₄ is ___.","+2|+4|+7|+6",2],
+["Chemistry","The catalyst used in the Haber process is ___.","platinum|iron|nickel|vanadium(V) oxide",1],
+["Chemistry","The general formula of alkenes is ___.","CₙH₂ₙ₊₂|CₙH₂ₙ|CₙH₂ₙ₋₂|CₙHₙ",1],
+["Chemistry","Permanent hardness of water is caused by ___.","Ca(HCO₃)₂|CaSO₄|NaCl|Na₂CO₃",1],
+["Chemistry","80 g of a substance has a half-life of 2 h. The mass left after 6 h is ___.","40 g|20 g|10 g|5 g",2],
+["Chemistry","An alkanoic acid reacts with an alkanol to form ___.","a salt|an ester|an ether|an alkene",1],
+["Chemistry","In an exothermic reaction, ΔH is ___.","positive|negative|zero|infinite",1],
+["Chemistry","The anode product in the electrolysis of concentrated NaCl solution is ___.","H₂|Na|Cl₂|O₂",2],
+["Physics","A car accelerates from rest to 20 m/s in 5 s. Its acceleration is ___.","2 m/s²|4 m/s²|5 m/s²|100 m/s²",1],
+["Physics","Which of these is a fundamental quantity?","force|velocity|time|work",2],
+["Physics","An object is 30 cm from a mirror/lens of focal length 10 cm. The image distance (1/f=1/u+1/v) is ___.","7.5 cm|15 cm|20 cm|30 cm",1],
+["Physics","A 12 V source drives a current through a 4 Ω resistor. The current is ___.","3 A|48 A|0.33 A|8 A",0],
+["Physics","A wave of frequency 50 Hz and wavelength 2 m has speed ___.","25 m/s|52 m/s|100 m/s|0.04 m/s",2],
+["Physics","The energy stored in a capacitor is ___.","CV|½CV²|CV²|Q/V",1],
+["Physics","Heat needed to raise 2 kg of a substance (c = 400 J/kg/K) by 10 K is ___.","800 J|4000 J|8000 J|80000 J",2],
+["Physics","Total internal reflection occurs when light passes from a ___.","less dense to denser medium|denser to less dense medium|vacuum to glass|air to water",1],
+["Physics","Which radiation is not deflected by a magnetic field?","alpha|beta|gamma|cathode rays",2],
+["Physics","The kinetic energy of a 4 kg body moving at 3 m/s is ___.","12 J|18 J|36 J|6 J",1],
+["Physics","The moment of a 10 N force acting 0.5 m from a pivot is ___.","20 Nm|5 Nm|0.05 Nm|10.5 Nm",1],
+["Physics","The SI unit of pressure is ___.","newton|joule|pascal|watt",2],
+["English","Opposite in meaning to VERBOSE.","wordy|concise|loud|talkative",1],
+["English","Closest in meaning to OBSOLETE.","modern|outdated|useful|fragile",1],
+["English","Opposite in meaning to TRANSPARENT.","clear|opaque|bright|thin",1],
+["English","Closest in meaning to ABSOLVE.","blame|acquit|punish|ignore",1],
+["English","Each of the boys ___ a book.","have|has|are|were",1],
+["English","If I ___ rich, I would travel the world.","am|was|were|will be",2],
+["English","The news ___ shocking.","were|was|are|have been",1],
+["English","Let's go home, ___?","will we|don't we|shall we|do we",2],
+["English","'To kick the bucket' means to ___.","die|fight|escape|complain",0],
+["English","Which word is stressed on the first syllable?","begin|happy|forget|erase",1],
+["English","Which word has the same vowel sound as 'boat'?","note|not|nut|put",0],
+["English","He is allergic ___ dust.","to|with|at|of",0],
+["Biology","The plant cell wall is made mainly of ___.","chitin|cellulose|protein|lipid",1],
+["Biology","Which blood cells fight infection?","red blood cells|platelets|white blood cells|plasma",2],
+["Biology","The organ of gaseous exchange in fish is the ___.","lung|gill|trachea|skin",1],
+["Biology","Deficiency of vitamin D causes ___.","rickets|scurvy|night blindness|anaemia",0],
+["Biology","The Nigerian biome with tall trees and heavy rainfall is the ___.","Sudan savanna|desert|tropical rainforest|Guinea savanna",2],
+["Biology","The process that removes CO₂ from the atmosphere is ___.","respiration|photosynthesis|combustion|decay",1],
+["Biology","The malaria parasite is ___.","Plasmodium|Schistosoma|Taenia|Ascaris",0],
+["Biology","Insulin is produced by the ___.","liver|pancreas|kidney|thyroid",1],
+["Biology","Taenia (tapeworm) belongs to the phylum ___.","Nematoda|Annelida|Platyhelminthes|Arthropoda",2],
+["Chemistry","The atomic number of an element equals its number of ___.","neutrons|protons|nucleons|molecules",1],
+["Chemistry","The bond in NaCl is ___.","covalent|ionic|metallic|hydrogen",1],
+["Chemistry","The shape of the methane molecule is ___.","linear|pyramidal|tetrahedral|non-linear",2],
+["Chemistry","The gas that turns lime water milky is ___.","O₂|CO₂|H₂|N₂",1],
+["Chemistry","Brass is an alloy of ___.","copper and zinc|copper and tin|iron and carbon|lead and tin",0],
+["Chemistry","The mass of one mole of H₂O (H=1, O=16) is ___.","16 g|18 g|20 g|34 g",1],
+["Chemistry","The most electronegative element is ___.","oxygen|chlorine|fluorine|nitrogen",2],
+["Chemistry","The acid present in vinegar is ___.","citric acid|ethanoic acid|tartaric acid|methanoic acid",1],
+["Chemistry","A solution of pH 9 is ___.","strongly acidic|neutral|weakly basic|strongly basic",2],
+["Physics","Newton's second law of motion is expressed as ___.","F = ma|F = mv|F = m/a|F = a/m",0],
+["Physics","The weight of a 5 kg mass (g = 10 m/s²) is ___.","5 N|15 N|50 N|0.5 N",2],
+["Physics","The SI unit of power is ___.","joule|watt|newton|pascal",1],
+["Physics","The speed of light in vacuum is about ___.","3×10⁶ m/s|3×10⁸ m/s|3×10¹⁰ m/s|340 m/s",1],
+["Physics","Resistors of 3 Ω and 6 Ω in parallel have a total resistance of ___.","9 Ω|4.5 Ω|2 Ω|18 Ω",2],
+["Physics","Short-sightedness is corrected with a ___ lens.","convex|concave|plane|cylindrical",1],
+["Physics","Heat travels through a vacuum by ___.","conduction|convection|radiation|evaporation",2],
+["Physics","The pressure at 2 m depth in water (ρ=1000 kg/m³, g=10) is ___.","2000 Pa|20000 Pa|200 Pa|10000 Pa",1],
+["Physics","A wave with period 0.02 s has frequency ___.","0.02 Hz|2 Hz|50 Hz|500 Hz",2],
+["Physics","The electromagnetic wave with the shortest wavelength is ___.","radio waves|X-rays|gamma rays|infrared",2],
+["English","Closest in meaning to GREGARIOUS.","shy|sociable|angry|lazy",1],
+["English","Opposite in meaning to DILIGENT.","hardworking|lazy|clever|quick",1],
+["English","Closest in meaning to CONCEAL.","reveal|hide|show|find",1],
+["English","Opposite in meaning to ANCIENT.","old|modern|historic|aged",1],
+["English","Closest in meaning to RELUCTANT.","eager|unwilling|ready|happy",1],
+["English","Opposite in meaning to OPTIMISTIC.","hopeful|pessimistic|cheerful|bold",1],
+["English","Closest in meaning to ABUNDANT.","plentiful|rare|empty|small",0],
+["English","Opposite in meaning to GENEROUS.","kind|stingy|rich|gentle",1],
+["English","The teacher, together with her students, ___ arrived.","have|has|are|were",1],
+["English","She has lived here ___ 2015.","for|since|from|in",1],
+["English","I prefer tea ___ coffee.","than|to|from|over",1],
+["English","He suggested that we ___ early.","leaves|left|leave|leaving",2],
+["English","Hardly had he arrived ___ it began to rain.","than|when|while|then",1],
+["English","The more you read, ___ you learn.","the more|more|the most|most",0],
+["English","She can swim, ___?","can she|can't she|does she|isn't she",1],
+["English","He asked me where ___.","was I going|I was going|am I going|did I go",1],
+["English","Choose the correct spelling.","neccessary|necessary|necesary|necessery",1],
+["English","Choose the correct spelling.","ocurrence|occurence|occurrence|occurance",2],
+["English","'To spill the beans' means to ___.","cook|reveal a secret|waste food|fail",1],
+["English","'A blessing in disguise' means ___.","a hidden curse|something good that seemed bad at first|a lucky guess|a costume",1],
+["English","'To hit the nail on the head' means to ___.","say exactly the right thing|do carpentry|fail|get hurt",0],
+["English","'He is as brave as a lion' is a ___.","metaphor|simile|pun|irony",1],
+["English","'Time is money' is a ___.","simile|metaphor|apostrophe|oxymoron",1],
+["English","'I have told you a million times' is an example of ___.","hyperbole|litotes|irony|simile",0],
+["English","Which word is stressed on the second syllable?","table|return|mother|visit",1],
+["English","Which word has the same vowel sound as 'pool'?","full|rule|pull|put",1],
+["English","Which word rhymes with 'light'?","fright|fought|fit|lit",0],
+["English","Which word begins with the sound /θ/?","this|then|think|they",2],
+["English","Which word is a homophone of 'right'?","write|wrong|rough|ring",0],
+["English","In 'He ran quickly', the word 'quickly' is a/an ___.","adjective|adverb|noun|verb",1],
+["English","In 'Honesty is the best policy', 'honesty' is a/an ___ noun.","concrete|abstract|proper|collective",1],
+["English","The plural of 'phenomenon' is ___.","phenomenons|phenomena|phenomenas|phenomenon",1],
+["English","She sings ___ than her sister.","good|better|best|more good",1],
+["Biology","The unit of heredity is the ___.","gene|cell|tissue|organ",0],
+["Biology","The universal blood donor group is ___.","A|B|AB|O",3],
+["Biology","Chlorophyll absorbs mainly ___ light.","green and yellow|red and blue|only green|ultraviolet",1],
+["Biology","The part of the brain that controls balance is the ___.","cerebrum|cerebellum|medulla|hypothalamus",1],
+["Biology","Transpiration is the loss of water vapour mainly through the ___.","roots|stomata|bark|flowers",1],
+["Biology","The plant hormone that promotes fruit ripening is ___.","auxin|ethylene|cytokinin|gibberellin",1],
+["Biology","Exchange of materials between mother and foetus occurs in the ___.","uterus|placenta|ovary|cervix",1],
+["Biology","The enzyme in saliva that digests starch is ___.","pepsin|amylase|lipase|trypsin",1],
+["Biology","The number of chromosomes in a human body cell is ___.","23|46|44|48",1],
+["Biology","Mushroom belongs to the kingdom ___.","Plantae|Fungi|Protista|Monera",1],
+["Biology","The relationship between legumes and Rhizobium is ___.","parasitism|mutualism|commensalism|predation",1],
+["Biology","An insect that undergoes complete metamorphosis is the ___.","cockroach|butterfly|grasshopper|termite",1],
+["Biology","The light-sensitive layer of the eye is the ___.","cornea|retina|iris|lens",1],
+["Biology","The genotype of a sickle-cell carrier is ___.","AA|AS|SS|OO",1],
+["Biology","The main nitrogenous excretory product of mammals is ___.","ammonia|urea|uric acid|creatinine only",1],
+["Biology","The vector of malaria is the female ___.","Aedes mosquito|Anopheles mosquito|housefly|tsetse fly",1],
+["Biology","Gametes are formed by ___.","mitosis|meiosis|budding|fission",1],
+["Biology","Which is a primary consumer?","lion|grasshopper|hawk|snake",1],
+["Biology","The soil type with the highest water retention is ___.","sandy|clayey|loamy|gravel",1],
+["Chemistry","Chlorine is prepared in the laboratory by oxidising conc. HCl with ___.","MnO2|NaOH|H2SO4|CaCO3",0],
+["Chemistry","The molar volume of a gas at s.t.p. is ___.","22.4 dm3|2.24 dm3|24 dm3|11.2 dm3",0],
+["Chemistry","Isotopes of an element have the same ___.","mass number|atomic number|neutron number|nucleon number",1],
+["Chemistry","Oxidation is the ___.","gain of electrons|loss of electrons|loss of protons|gain of neutrons",1],
+["Chemistry","One faraday is approximately ___.","9650 C|96500 C|965 C|6.02 C",1],
+["Chemistry","A catalyst increases reaction rate by ___.","raising temperature|lowering activation energy|raising pressure|changing products",1],
+["Chemistry","Increasing pressure in N2 + 3H2 <=> 2NH3 shifts equilibrium to the ___.","left|right|neither|top",1],
+["Chemistry","The simplest alkane is ___.","ethane|methane|propane|butane",1],
+["Chemistry","Ethanol is produced by fermentation of ___ using yeast.","glucose|starch only|salt|oil",0],
+["Chemistry","Saponification of fats gives soap and ___.","glycerol|ethanol|water only|methanol",0],
+["Chemistry","An ore of iron is ___.","bauxite|haematite|cryolite|galena",1],
+["Chemistry","Which is an allotrope of carbon?","diamond|quartz|silica|marble",0],
+["Chemistry","Aluminium is extracted by ___.","reduction with carbon|electrolysis|roasting|distillation",1],
+["Chemistry","The acid used in a car battery is ___.","HCl|H2SO4|HNO3|ethanoic acid",1],
+["Chemistry","Which indicator turns red in acid?","litmus|phenolphthalein only|starch|none",0],
+["Chemistry","Ammonia gas turns damp red litmus paper ___.","white|blue|green|yellow",1],
+["Chemistry","Mass number is the sum of ___.","protons and electrons|protons and neutrons|neutrons and electrons|electrons only",1],
+["Chemistry","The hydrocarbon with a triple bond is ___.","ethene|ethyne|ethane|benzene",1],
+["Chemistry","Ethene decolourises bromine water because it is ___.","saturated|unsaturated|an acid|a salt",1],
+["Physics","The slope of a distance-time graph gives ___.","acceleration|speed|force|work",1],
+["Physics","The momentum of a 2 kg body moving at 5 m/s is ___.","10 kg m/s|7 kg m/s|2.5 kg m/s|25 kg m/s",0],
+["Physics","The work done by a 20 N force over 3 m is ___.","23 J|60 J|6.7 J|17 J",1],
+["Physics","Archimedes' principle states that upthrust equals ___.","weight of the body|weight of fluid displaced|density of fluid|volume of body",1],
+["Physics","A gas at 100 kPa and 2 L expands isothermally to 4 L. Its new pressure is ___.","200 kPa|50 kPa|25 kPa|400 kPa",1],
+["Physics","27 degrees Celsius in kelvin is ___.","246 K|300 K|27 K|373 K",1],
+["Physics","Latent heat is the heat absorbed or released during ___.","temperature rise|change of state at constant temperature|expansion|radiation",1],
+["Physics","Sound cannot travel through a ___.","solid|liquid|vacuum|gas",2],
+["Physics","The image formed by a plane mirror is ___.","real and inverted|virtual and same size|real and magnified|virtual and diminished",1],
+["Physics","A fuse is connected in the ___ wire.","neutral|live|earth|any",1],
+["Physics","A step-up transformer has ___.","more turns on the secondary coil|more turns on the primary coil|equal turns|no coils",0],
+["Physics","Hooke's law states that extension is proportional to ___.","mass of spring|applied force|length|temperature",1],
+["Physics","A machine with load 100 N and effort 25 N has mechanical advantage ___.","0.25|4|75|125",1],
+["Physics","At the maximum height of an upward-thrown body, its velocity is ___.","maximum|zero|equal to g|negative",1],
+["Physics","Beats are produced by two waves of ___ frequencies.","equal|slightly different|very different|zero",1],
+["Physics","The apparent change in frequency due to relative motion is the ___ effect.","Doppler|Compton|Zeeman|Hall",0],
+["Physics","The unit of capacitance is the ___.","farad|henry|tesla|ohm",0],
+["Physics","The photoelectric effect shows the ___ nature of light.","wave|particle|sound|thermal",1]
+].map(r=>({s:r[0],q:r[1],o:r[2].split("|"),a:r[3]}));
+const SUBS=["English","Biology","Chemistry","Physics"];B.sort((x,y)=>SUBS.indexOf(x.s)-SUBS.indexOf(y.s));
+const $=s=>document.querySelector(s),app=$("#app"),K="ace_utme_v1";
+let st=null,db=null,owner=false,tick=null,cur=0;
+const load=()=>{try{return JSON.parse(localStorage.getItem(K))}catch(e){return null}};
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}};
+const fmt=s=>{s=Math.max(0,s|0);return String(s/3600|0).padStart(2,"0")+":"+String(s%3600/60|0).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const head=()=>`<div class="brand"><div class="logo">🎓</div><h1>${TITLE}</h1><div class="mu">Hosted by <b>${TITLE}</b> · UTME 2027 Simulation (English · Biology · Chemistry · Physics)</div></div>`;
+const foot=()=>`<div class="foot">© ${TITLE}</div>${st&&st.start?`<button class="lb" onclick="lbOpen()">🏆 Leaderboard</button>`:""}`;
+function home(){
+ const open=Date.now()<OPEN_UNTIL;
+ if(st&&st.done)return result();
+ if(st&&st.start)return quiz();
+ if(!open&&!owner){app.innerHTML=head()+`<div class="card" style="text-align:center"><div style="font-size:40px">⏳</div><h2>Test not open yet</h2><p class="mu">${TITLE} will announce when the test link goes live. Check back then!</p></div>`+foot();return}
+ app.innerHTML=head()+`<div class="card"><h2 style="margin-top:0">Start the test</h2><p class="mu">${B.length} questions · 2 hours · One attempt only. You can move back and forth between questions before you submit.</p>
+ <label class="mu">Full name</label><input id="nm" placeholder="e.g. Ada Okafor" autocomplete="name">
+ <label class="mu">WhatsApp number</label><input id="ph" type="tel" placeholder="e.g. 08012345678" autocomplete="tel">
+ <div id="er" class="mu" style="color:var(--bad);min-height:20px"></div><button class="pri" onclick="begin()">Start Test →</button></div>`+(owner?`<div class="card"><b>Owner tools</b><p class="mu">Your tries are never added to the leaderboard.</p><button class="sec" onclick="reset()">↺ Reset my attempt</button> <button class="sec" onclick="lbOpen()">🏆 View leaderboard</button></div>`:"")+foot();
+}
+async function begin(){
+ const n=$("#nm").value.trim(),p=$("#ph").value.replace(/[\s-]/g,"");
+ if(n.length<3)return $("#er").textContent="Please enter your full name.";
+ if(!/^\+?\d{10,14}$/.test(p))return $("#er").textContent="Enter a valid WhatsApp number.";
+ if(db&&!owner){try{const d=await db.collection("results").doc(p).get();if(d.exists)return $("#er").textContent="This number has already taken the test."}catch(e){}}
+ st={name:n,phone:p,start:Date.now(),ans:{},done:false};save();cur=0;quiz();
+}
+function quiz(){
+ const left=TOTAL_SECS-((Date.now()-st.start)/1000|0);if(left<=0)return submit(true);
+ const q=B[cur];
+ app.innerHTML=`<div class="top"><div><b>${esc(st.name)}</b><div class="mu">${Object.keys(st.ans).length}/${B.length} answered</div></div><div class="tm" id="tm">${fmt(left)}</div></div>
+ <div class="row" style="margin-bottom:12px;flex-wrap:wrap">${SUBS.map(s=>`<button class="${q.s==s?"pri":"sec"}" style="min-width:45%" onclick="cur=B.findIndex(x=>x.s=='${s}');quiz()">${s}</button>`).join("")}</div><div class="card"><span class="tag">${q.s}</span> <span class="mu">Question ${cur+1} of ${B.length}</span><h3>${esc(q.q)}</h3>
+ ${q.o.map((o,i)=>`<button class="opt ${st.ans[cur]===i?"on":""}" onclick="pick(${i})"><b>${"ABCD"[i]}.</b> ${esc(o)}</button>`).join("")}
+ <div class="row" style="margin-top:12px"><button class="sec" onclick="go(-1)" ${cur?"":"disabled"}>← Previous</button><button class="sec" onclick="go(1)" ${cur<B.length-1?"":"disabled"}>Next →</button></div></div>
+ <div class="card"><div class="pal">${B.map((x,i)=>x.s!=q.s?"":`<button class="${st.ans[i]!=null?"d":""} ${i==cur?"c":""}" onclick="cur=${i};quiz()">${i+1}</button>`).join("")}</div></div>
+ <div id="sb"><button class="pri" onclick="subAsk()">Submit Test</button></div>${owner?`<button class="sec" style="width:100%;margin-top:10px" onclick="reset()">↺ Reset my attempt (owner only)</button>`:""}`+foot();
+ clearInterval(tick);tick=setInterval(()=>{const l=TOTAL_SECS-((Date.now()-st.start)/1000|0);const e=$("#tm");if(e)e.textContent=fmt(l);if(l<=0)submit(true)},1000);
+}
+const pick=i=>{st.ans[cur]=i;save();quiz()},go=d=>{cur+=d;quiz()};
+function subAsk(){$("#sb").innerHTML=`<div class="card"><b>Submit now?</b><p class="mu">You answered ${Object.keys(st.ans).length} of ${B.length} questions. You cannot retake the test after submitting.</p><div class="row"><button class="sec" onclick="quiz()">Cancel</button><button class="pri" onclick="submit()">Yes, submit</button></div></div>`}
+async function submit(){
+ clearInterval(tick);if(st.done)return;
+ let sc=0;B.forEach((q,i)=>{if(st.ans[i]===q.a)sc++});
+ st.done=true;st.score=sc;st.secs=Math.min(TOTAL_SECS,(Date.now()-st.start)/1000|0);save();
+ if(db&&!owner){try{await db.collection("results").doc(st.phone).set({name:st.name,phone:st.phone,score:sc,total:B.length,secs:st.secs,at:Date.now()})}catch(e){}}
+ result();
+}
+function result(){
+ const p=Math.round(st.score/B.length*100);
+ app.innerHTML=head()+`<div class="card"><h2 style="text-align:center;margin-top:0">Test submitted ✅</h2>${owner?`<div class="big">${st.score}/${B.length}</div><p style="text-align:center">${p}% · Time used: <b>${fmt(st.secs)}</b></p>`:`<div class="big">🔒</div><p style="text-align:center"><b>Results are disabled.</b><br>${TITLE} will announce the results.</p>`}
+ <p class="mu" style="text-align:center">${esc(st.name)} · ${esc(st.phone)}<br>Your answers have been recorded. The test cannot be retaken.</p></div>`+(owner?`<button class="sec" style="width:100%" onclick="reset()">↺ Reset my attempt (owner)</button>`:"")+foot();
+}
+function reset(){st=null;try{localStorage.removeItem(K)}catch(e){}cur=0;home()}
+async function lbOpen(){
+ if(!owner){app.innerHTML=head()+'<div class="card" style="text-align:center"><div style="font-size:40px">🔒</div><h2>Leaderboard is private</h2><p class="mu">Only the test creator can view it.</p><button class="sec" onclick="home()">← Back</button></div>';return}
+ app.innerHTML=head()+`<div class="card"><h2 style="margin-top:0">🏆 Leaderboard</h2><div id="lt" class="sc mu">Loading…</div><br><button class="sec" onclick="home()">← Back</button></div>`;
+ if(!db)return $("#lt").textContent="Database unavailable.";
+ try{const s=await db.collection("results").get();const r=s.docs.map(d=>d.data()).sort((a,b)=>b.score-a.score||a.secs-b.secs);
+ const t=["🥇","🥈","🥉"];
+ $("#lt").innerHTML=r.length?`<table><tr><th>#</th><th>Name</th><th>WhatsApp</th><th>Score</th><th>Time</th></tr>${r.map((x,i)=>`<tr><td>${t[i]||i+1}</td><td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${x.score}/${x.total}</td><td>${fmt(x.secs)}</td></tr>`).join("")}</table>`:"No submissions yet.";}catch(e){$("#lt").textContent="Could not load results."}
+}
+st=load();home();
+(async()=>{try{const u=await claude.use("user");owner=u?await u.isOwner():false;db=await claude.use("db");}catch(e){}home()})();
+</script></body></html>
